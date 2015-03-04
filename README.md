@@ -108,7 +108,48 @@ var output = Test.renderString('test');
 ```
 
 ## Widget
+A widget is responsible for creating and updating own dom elements. It has events for different situations in the dom update cycle. All methods have access to a stateful `this`.
 
+Widgets are perfect for integrating existing Javascript libraries into an odojs project.
+```js
+Leaflet = widget({
+  render: function() {
+    return dom('div#map');
+  },
+  afterMount: function(el, state) {
+    this.map = L.map(el).setView([state.lat, state.lng], state.zoom);
+    var tiles = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', { subdomains: '1234' });
+    tiles.addTo(this.map);
+    this.map.on('moveend', (function(_this) {
+      return function() {
+        var center = _this.map.getCenter();
+        var zoom = _this.map.getZoom();
+        var location = { lat: center.lat, lng: center.lng, zoom: zoom };
+        hub.emit('leaflet moved to {lat}/{lng}/{zoom}', location);
+      };
+    })(this));
+  },
+  update: function(el, state, prev) {
+    // return a different dom element to replace the dom
+    return el;
+  },
+  onUpdate: function(el, state, prev) {
+    this.map.setView([state.lat, state.lng], state.zoom);
+  },
+  beforeUnmount: function(el, state) {
+    this.map.remove();
+  }
+});
+
+// widgets can't be mounted directly, but can be used inside Components
+var App = component({
+  render: function(state) {
+    return dom('div', [Leaflet(state)]);
+  }
+});
+
+var scene = App.render(document.body, { lat: 51, lng: 0, zoom: 8 });
+```
 
 ## DOM
 
