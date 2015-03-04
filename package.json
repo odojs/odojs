@@ -8,6 +8,15 @@
   },
   "author": "Thomas Coats",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/odojs/odojs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:odojs/odojs.git"
+  },
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/odojs/odojs"
   "dependencies": {
     "main-loop": "^3.1.0",
     "setimmediate": "^1.0.2",
