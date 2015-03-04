@@ -42,6 +42,8 @@ setTimeout(function () {
 
 # API
 
+Documentation for some parts of virtual-dom is not available, with this library it shouldn't be needed, but just in case there is a [work in progress page for virtual-dom documentation](http://hackersome.com/p/littleloops/virtual-dom-docs-wip) that does a good job describing the internals.
+
 ```js
 var odojs = require('odojs');
 var component = odojs.component;
