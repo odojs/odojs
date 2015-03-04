@@ -32,7 +32,7 @@ component = function(spec) {
     }
     return _results;
   };
-  Component.render = function(el, state) {
+  Component.mount = function(el, state) {
     var scene, _render;
     _render = function(state) {
       return Component(state);
@@ -51,7 +51,7 @@ component = function(spec) {
           return scene.update(state);
         });
       },
-      remove: function() {
+      unmount: function() {
         _render = function() {
           return new VText('');
         };
@@ -91,7 +91,7 @@ Widget = (function() {
   };
 
   Widget.prototype.update = function(prev, el) {
-    var k, result, v;
+    var dom, k, result, v;
     for (k in prev) {
       v = prev[k];
       if (this[k] == null) {
@@ -101,6 +101,12 @@ Widget = (function() {
     result = el;
     if (this.spec.update != null) {
       result = this.spec.update.call(this, el, this.state, prev);
+      if (result !== null) {
+        dom = create(result);
+        if (dom !== null) {
+          result = dom;
+        }
+      }
     }
     if (this.spec.onUpdate != null) {
       this.spec.onUpdate.call(this, result, this.state, prev);

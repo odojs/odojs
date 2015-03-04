@@ -33,7 +33,7 @@ var App = component({
   }
 });
 
-var scene = App.render(document.body, 'World!');
+var scene = App.mount(document.body, 'World!');
 
 setTimeout(function () {
   scene.update('New Zealand!');
@@ -81,13 +81,13 @@ var App = component({
     ]);
   }
 });
-scene = App.render(document.body, { name: 'Bob', age: '43' });
+scene = App.mount(document.body, { name: 'Bob', age: '43' });
 ```
 
-### scene = Component.render(dom, state)
+### scene = Component.mount(dom, state)
 Mounts a Component into the browser's dom. Returns a scene object used to update or remove.
 ```js
-scene = App.render(document.body, { name: 'Bob', age: '43' });
+scene = App.mount(document.body, { name: 'Bob', age: '43' });
 ```
 
 ### scene.update(state)
@@ -96,13 +96,13 @@ Renders the Component with new state. The Component is rendered into a virtual d
 scene.update({ name: 'Sue', age: '33' });
 ```
 
-### scene.remove()
+### scene.unmount()
 Applies an empty patch, unmounting all Widgets and removing all Components from the browser dom.
 ```js
-scene.remove()
+scene.unmount()
 ```
 
-### string = Component.renderString(state)
+### string = Component.stringify(state)
 Renders the Component as a string. Widgets return empty string. Can be used in Node.js on the server.
 ```js
 var Test = component({
@@ -110,7 +110,7 @@ var Test = component({
     return dom('span', state);
   }
 });
-var output = Test.renderString('test');
+var output = Test.stringify('test');
 // output = "<span>test</span>"
 ```
 
@@ -159,7 +159,7 @@ var App = component({
   }
 });
 
-var scene = App.render(document.body, { lat: 51, lng: 0, zoom: 8 });
+var scene = App.mount(document.body, { lat: 51, lng: 0, zoom: 8 });
 ```
 
 ### vdom or dom = WidgetSpec.render(state)

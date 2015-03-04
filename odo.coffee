@@ -14,14 +14,14 @@ component = (spec) ->
       return plugin Component
     for k, v of plugin
       Component[k] = v
-  Component.render = (el, state) ->
+  Component.mount = (el, state) ->
     _render = (state) -> Component state
     scene = main state, ((state) -> _render state),
       create: create, diff: diff, patch: patch
     el.appendChild scene.target
     update: (state) ->
       setImmediate -> scene.update state
-    remove: ->
+    unmount: ->
       # patch against nothing for unmount
       _render = -> new VText ''
       scene.update {}
@@ -49,6 +49,9 @@ class Widget
     result = el
     if @spec.update?
       result = @spec.update.call @, el, @state, prev
+      if result isnt null
+        dom = create result
+        result = dom if dom isnt null
     if @spec.onUpdate?
       @spec.onUpdate.call @, result, @state, prev
     result
