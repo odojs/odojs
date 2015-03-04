@@ -17,3 +17,25 @@ Suggestions:
 [![NPM version](https://badge.fury.io/js/odojs.svg)](http://badge.fury.io/js/odojs)
 
 Inspired by [deku](https://github.com/segmentid/deku/).
+
+# Examples
+
+Hello world.
+
+```js
+var odojs = require('odojs');
+var component = odojs.component;
+var dom = odojs.dom;
+
+var App = component({
+  render: function(state) {
+    return dom('span', ['Hello ' + state]);
+  }
+});
+
+var scene = App.render(document.body, 'World!');
+
+setTimeout(function () {
+  scene.update('New Zealand!');
+}, 2000)
+```
