@@ -51,6 +51,10 @@ var svg = odojs.svg;
 var partial = odojs.partial;
 ```
 
+```coffee
+{ component, widget, dom, svg, partial } = require 'odojs
+```
+
 ## Component
 
 ### vdom = Component(state)
@@ -64,6 +68,7 @@ var Input = component({
 var App = component({
   render: function(state) {
     return dom('div', [
+      // vdom = Component(state)
       Input(state.name),
       Input(state.age)
     ]);
@@ -79,13 +84,28 @@ scene = App.render(document.body, { name: 'Bob', age: '43' });
 ```
 
 ### scene.update(state)
-Renders all the Components into a virtual dom tree, diffs this tree against the last virtual dom tree to construct a patch then applies this patch to the browser dom.
+Renders the Component with new state. The Component is rendered into a virtual dom tree, diffed against the last virtual dom tree and a patch is constructed which is applied to the browser dom.
+```js
+scene.update({ name: 'Sue', age: '33' });
+```
 
 ### scene.remove()
 Applies an empty patch, unmounting all Widgets and removing all Components from the browser dom.
+```js
+scene.remove()
+```
 
 ### string = Component.renderString(state)
-Renders the Component as a string. Widgets return empty string.
+Renders the Component as a string. Widgets return empty string. Can be used in Node.js on the server.
+```js
+var Test = component({
+  render: function(state) {
+    return dom('span', state);
+  }
+});
+var output = Test.renderString('test');
+// output = "<span>test</span>"
+```
 
 ## Widget
 
