@@ -56,6 +56,10 @@ var partial = odojs.partial;
 ```
 
 ## Component
+Create a component by passing a specification to the component method. This specification should have a `render` method that takes state and returns virtual dom nodes.
+
+### vdom = ComponentSpec.render(state)
+Input state and return virtual dom. Other Components can be called and passed unique values or portions of state.
 
 ### vdom = Component(state)
 Renders a portion of virtual dom. Normally only used within a Component. In this example we're using the `Input` component multiple times within our `App` component, passing each instance different state.
@@ -111,6 +115,8 @@ var output = Test.renderString('test');
 A widget is responsible for creating and updating own dom elements. It has events for different situations in the dom update cycle. All methods have access to a stateful `this`.
 
 Widgets are perfect for integrating existing Javascript libraries into an odojs project.
+
+Create a widget by passing a specification to the widget method. A `render` method that returns a browser dom element, or virtual dom elements is required, all other methods are options.
 ```js
 Leaflet = widget({
   render: function() {
@@ -118,7 +124,9 @@ Leaflet = widget({
   },
   afterMount: function(el, state) {
     this.map = L.map(el).setView([state.lat, state.lng], state.zoom);
-    var tiles = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', { subdomains: '1234' });
+    var tiles = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', {
+      subdomains: '1234'
+    });
     tiles.addTo(this.map);
     this.map.on('moveend', (function(_this) {
       return function() {
@@ -129,11 +137,11 @@ Leaflet = widget({
       };
     })(this));
   },
-  update: function(el, state, prev) {
+  update: function(el, state) {
     // return a different dom element to replace the dom
     return el;
   },
-  onUpdate: function(el, state, prev) {
+  onUpdate: function(el, state) {
     this.map.setView([state.lat, state.lng], state.zoom);
   },
   beforeUnmount: function(el, state) {
@@ -150,6 +158,24 @@ var App = component({
 
 var scene = App.render(document.body, { lat: 51, lng: 0, zoom: 8 });
 ```
+
+### vdom or dom = WidgetSpec.render(state)
+The same as Component, this method is passed state and expected to return either a browser dom element or virtual dom element. This is the only required method.
+
+### WidgetSpec.afterMount(el, state)
+Called after the element returned by `render` has been appended to the browser dom. This is the place to pass the element to other Javascript libraries, or attach manual event handlers.
+
+### vdom or dom = WidgetSpec.update(el, state)
+Called during update. All properties on the old widget have been copied across and are available. A browser dom element or virtual dom element can be returned from this method to replace the existing dom element. Return null or `el` for no change.
+
+### WidgetSpec.onUpdate(el, state)
+Called during update after `update` if it exists. All properties on the old widget have been copied across and are available and `el` will reflect any updates from `update`
+
+### WidgetSpec.beforeUnmount(el)
+Called just before the widget is removed from the browser dom. Can be used to unbind and cleanup anything else other Javascript code has been using.
+
+### vdom Widget(state)
+Renders a representation of the widget in virtual dom. Normally only used within a Component.
 
 ## DOM
 
