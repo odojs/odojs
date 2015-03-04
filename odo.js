@@ -91,18 +91,21 @@ Widget = (function() {
   };
 
   Widget.prototype.update = function(prev, el) {
-    var k, v;
+    var k, result, v;
     for (k in prev) {
       v = prev[k];
       if (this[k] == null) {
         this[k] = v;
       }
     }
+    result = el;
     if (this.spec.update != null) {
-      return this.spec.update.call(this, el, this.state, prev);
-    } else {
-      return null;
+      result = this.spec.update.call(this, el, this.state, prev);
     }
+    if (this.spec.onUpdate != null) {
+      this.spec.onUpdate.call(this, result, this.state, prev);
+    }
+    return result;
   };
 
   Widget.prototype.destroy = function(el) {

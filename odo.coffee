@@ -46,10 +46,12 @@ class Widget
     # copy state
     for k, v of prev
       @[k] = v if !@[k]?
+    result = el
     if @spec.update?
-      @spec.update.call @, el, @state, prev
-    else
-      null
+      result = @spec.update.call @, el, @state, prev
+    if @spec.onUpdate?
+      @spec.onUpdate.call @, result, @state, prev
+    result
   destroy: (el) ->
     if @spec.beforeUnmount?
       @spec.beforeUnmount.call @, el, @state
