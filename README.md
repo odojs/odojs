@@ -187,4 +187,4 @@ This is [virtual-hyperscript](https://github.com/Matt-Esch/virtual-dom/tree/mast
 
 ## Partial
 
-This is [vdom-thunk](https://github.com/Raynos/vdom-thunk) which can be used to cache sections of the virtual dom.
+This is [vdom-thunk](https://github.com/Raynos/vdom-thunk) which can be used to cache sections of the virtual dom based on state.
