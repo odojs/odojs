@@ -24,5 +24,6 @@ module.exports = {
   widget: widget,
   dom: require('virtual-dom/h'),
   svg: require('virtual-dom/virtual-hyperscript/svg'),
-  partial: require('vdom-thunk')
+  partial: require('vdom-thunk'),
+  compose: require('./compose')
 };
