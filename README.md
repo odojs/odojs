@@ -19,7 +19,7 @@ Suggestions:
 
 Inspired by [deku](https://github.com/segmentid/deku/).
 
-Quick wiki links
+Wiki links
 - [API](https://github.com/odojs/odojs/wiki/home)
 - [Component](https://github.com/odojs/odojs/wiki/component)
 - [Widget](https://github.com/odojs/odojs/wiki/widget)
