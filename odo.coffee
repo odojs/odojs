@@ -1,12 +1,14 @@
 component = require './component'
 widget = require './widget'
+mount = require './mount'
+query = require './query'
+stringify = require './stringify'
 
-Query = require './query'
-Stringify = require './stringify'
-
-component.use Query
-component.use Stringify
-widget.use Query
+# built in plugins
+component.use mount
+component.use stringify
+component.use query
+widget.use query
 
 module.exports =
   component: component
