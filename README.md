@@ -1,6 +1,6 @@
 # Odojs
 
-Simple virtual-dom components using the excellent [virtual-dom](https://github.com/Matt-Esch/virtual-dom) library.
+Simple virtual dom components using the excellent [virtual-dom](https://github.com/Matt-Esch/virtual-dom) library.
 
 Supports:
 - Framework free components - users of the component don't need to include or work with odojs
