@@ -25,5 +25,6 @@ module.exports = {
   dom: require('virtual-dom/h'),
   svg: require('virtual-dom/virtual-hyperscript/svg'),
   partial: require('vdom-thunk'),
-  compose: require('./compose')
+  compose: require('./compose'),
+  hook: require('./hook')
 };

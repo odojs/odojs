@@ -34,7 +34,7 @@ Widget = (function() {
     var dom, k, result, v;
     for (k in prev) {
       v = prev[k];
-      if (this[k] == null) {
+      if (this[k] === void 0) {
         this[k] = v;
       }
     }
@@ -86,5 +86,7 @@ widget.plugins = [];
 widget.use = function(plugin) {
   return widget.plugins.push(plugin);
 };
+
+widget.Widget = Widget;
 
 module.exports = widget;

@@ -9,12 +9,15 @@ patch = require('virtual-dom/patch');
 
 VText = require('virtual-dom/vnode/vtext');
 
-module.exports = function(component, state) {
+module.exports = function(component, state, parent) {
   var target, tree;
   tree = component(state);
   target = create(tree);
   return {
     target: target,
+    mount: function() {
+      return parent.appendChild(target);
+    },
     update: function(state) {
       var newTree, patches;
       newTree = component(state);

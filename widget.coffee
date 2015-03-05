@@ -17,7 +17,7 @@ class Widget
   update: (prev, el) ->
     # copy state
     for k, v of prev
-      @[k] = v if !@[k]?
+      @[k] = v if @[k] is undefined
     result = el
     if @spec.update?
       result = @spec.update.call @, el, @state, prev
@@ -41,5 +41,6 @@ widget = (spec) ->
   Component
 widget.plugins = []
 widget.use = (plugin) -> widget.plugins.push plugin
+widget.Widget = Widget
 
 module.exports = widget
