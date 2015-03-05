@@ -4,7 +4,7 @@ var stringify;
 stringify = require('virtual-dom-stringify');
 
 module.exports = function(component, spec) {
-  return component.renderString = function(state) {
+  return component.stringify = function(state) {
     return stringify(spec.render.call(spec, state));
   };
 };

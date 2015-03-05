@@ -47,7 +47,6 @@ class Hook
     el
   destroy: -> @remove()
 
-
 hook = (spec) ->
   spec = extend {}, spec
   Component = (component, state, options) ->
