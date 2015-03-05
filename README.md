@@ -19,6 +19,14 @@ Suggestions:
 
 Inspired by [deku](https://github.com/segmentid/deku/).
 
+Quick API links
+- [Component](#component)
+- [Widget](#widget)
+- [Hook](#hook)
+- [DOM](#dom)
+- [SVG](#svg)
+- [Partial](#partial)
+
 # Example
 
 Hello world.
@@ -42,14 +50,6 @@ setTimeout(function () {
 ```
 
 # API
-
-Jump links
-- [Component](#component)
-- [Widget](#widget)
-- [Hook](#hook)
-- [DOM](#dom)
-- [SVG](#svg)
-- [Partial](#partial)
 
 Documentation for some parts of virtual-dom is not available, with this library it shouldn't be needed, but just in case there is a [work in progress page for virtual-dom documentation](http://hackersome.com/p/littleloops/virtual-dom-docs-wip) that does a good job describing the internals.
 
@@ -289,7 +289,3 @@ This is [virtual-hyperscript](https://github.com/Matt-Esch/virtual-dom/tree/mast
 ## Partial
 
 This is [vdom-thunk](https://github.com/Raynos/vdom-thunk) which can be used to cache sections of the virtual dom based on state.
-
-# Todo
-
-- Stringify doesn't go through hooks or widgets.
