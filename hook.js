@@ -50,6 +50,7 @@ Hook = (function() {
 
   Hook.prototype.update = function(prev, el) {
     var olditem;
+    this.el = prev.el, this.item = prev.item;
     if (prev.component === this.component) {
       if (this.component == null) {
         return el;

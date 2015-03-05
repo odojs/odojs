@@ -23,6 +23,7 @@ class Hook
     setImmediate => @create()
     @el
   update: (prev, el) ->
+    { @el, @item } = prev
     # same component, no transition
     if prev.component is @component
       return el if !@component?
