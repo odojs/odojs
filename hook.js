@@ -12,60 +12,71 @@ extend = require('extend');
 dom = require('virtual-dom/h');
 
 Hook = (function() {
-  function Hook(component, spec, state) {
+  function Hook(component, spec, state, options) {
+    this.component = component;
     this.spec = spec;
     this.state = state;
+    this.options = options;
   }
 
   Hook.prototype.type = 'Widget';
 
-  Hook.prototype.init = function() {
-    this.el = this.spec.render.call(this, this.state);
-    dom = create(this.el);
-    if (dom !== null) {
-      this.el = dom;
+  Hook.prototype.create = function() {
+    this.item = compose(this.component, this.state, this.el);
+    if (this.spec.enter != null) {
+      return this.spec.enter.call(this.spec, this.item, this.state, this.options);
+    } else {
+      return this.item.mount();
     }
+  };
+
+  Hook.prototype.remove = function() {
+    if (this.spec.exit != null) {
+      return this.spec.exit.call(this.spec, this.item, this.state, this.options);
+    } else {
+      return this.item.unmount();
+    }
+  };
+
+  Hook.prototype.init = function() {
+    this.el = create(dom('div'));
     setImmediate((function(_this) {
       return function() {
-        _this.item = compose(_this.component, state, el);
-        if (spec.enter != null) {
-          return spec.enter.call(_this, _this.item, state);
-        } else {
-          return _this.item.mount();
-        }
+        return _this.create();
       };
     })(this));
     return this.el;
   };
 
   Hook.prototype.update = function(prev, el) {
-    var k, result, v;
-    for (k in prev) {
-      v = prev[k];
-      if (this[k] === void 0) {
-        this[k] = v;
+    var olditem;
+    if (prev.component === this.component) {
+      if (this.component == null) {
+        return el;
       }
+      return el(this.item.update(this.state));
     }
-    result = el;
-    if (this.spec.update != null) {
-      result = this.spec.update.call(this, el, this.state, prev);
-      if (result !== null) {
-        dom = create(result);
-        if (dom !== null) {
-          result = dom;
-        }
-      }
+    if (prev.component == null) {
+      this.create();
+      return el;
     }
-    if (this.spec.onUpdate != null) {
-      this.spec.onUpdate.call(this, result, this.state, prev);
+    if (this.component == null) {
+      this.remove();
+      return el;
     }
-    return result;
+    olditem = this.item;
+    this.item = compose(this.component, this.state, el);
+    if (this.spec.transition != null) {
+      this.spec.transition.call(this.spec, olditem, this.item, this.state, this.options);
+    } else {
+      olditem.unmount();
+      this.item.mount();
+    }
+    return el;
   };
 
-  Hook.prototype.destroy = function(el) {
-    if (this.spec.beforeUnmount != null) {
-      return this.spec.beforeUnmount.call(this, el, this.state);
-    }
+  Hook.prototype.destroy = function() {
+    return this.remove();
   };
 
   return Hook;
@@ -73,58 +84,10 @@ Hook = (function() {
 })();
 
 hook = function(spec) {
-  var Component, hookSpec, plugin, _i, _len, _ref;
+  var Component, plugin, _i, _len, _ref;
   spec = extend({}, spec);
-  hookSpec = {
-    render: function(state) {
-      return dom('div');
-    },
-    afterMount: function(el, state) {
-      this.item = compose(this.component, state, el);
-      if (spec.enter != null) {
-        return spec.enter.call(this, this.item, state);
-      } else {
-        return this.item.mount();
-      }
-    },
-    onUpdate: function(el, state, prev) {
-      var olditem;
-      if (prev.component === this.component) {
-        if (this.component == null) {
-          return;
-        }
-        return this.item.update(state);
-      }
-      if (prev.component == null) {
-        return this.spec.afterMount.call(this, el, state);
-      }
-      if (this.component == null) {
-        return this.spec.beforeUnmount.call(this, el, state);
-      }
-      olditem = this.item;
-      this.item = compose(this.component, state, el);
-      if (spec.transition != null) {
-        return spec.transition.call(this, olditem, this.item, state);
-      } else {
-        olditem.unmount();
-        return this.item.mount();
-      }
-    },
-    beforeUnmount: function(el, state) {
-      if (spec.exit != null) {
-        return spec.exit.call(this, this.item, state);
-      } else {
-        return this.item.unmount();
-      }
-    }
-  };
   Component = function(component, state, options) {
-    var result;
-    result = new widget.Widget(hookSpec, state);
-    result.component = component;
-    result.options = options;
-    result.hook = spec;
-    return result;
+    return new Hook(component, spec, state, options);
   };
   Component.use = function(plugin) {
     return plugin(Component, spec);

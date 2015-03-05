@@ -2,9 +2,7 @@ create = require 'virtual-dom/create-element'
 extend = require 'extend'
 
 class Widget
-  constructor: (spec, state) ->
-    @spec = spec
-    @state = state
+  constructor: (@spec, @state) ->
   type: 'Widget'
   init: ->
     @el = @spec.render.call @, @state
