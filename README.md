@@ -3,7 +3,7 @@
 Simple virtual-dom components using the excellent [virtual-dom](https://github.com/Matt-Esch/virtual-dom) library.
 
 Supports:
-- Framework free components - users of the component don't need to include or work with a framework
+- Framework free components - users of the component don't need to include or work with odojs
 - Components can be mounted into the DOM and updated with state
 - Uni-directional data flow
 - Virtual-hyperscript is exposed
