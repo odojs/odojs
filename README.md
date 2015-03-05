@@ -28,3 +28,4 @@ Quick wiki links
 - [SVG](https://github.com/odojs/odojs/wiki/svg)
 - [Partial](https://github.com/odojs/odojs/wiki/partial)
 - [Compose](https://github.com/odojs/odojs/wiki/compose)
+- [Examples](https://github.com/odojs/odojs/wiki/examples)
