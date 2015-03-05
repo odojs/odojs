@@ -182,7 +182,7 @@ Renders a representation of the widget in virtual dom. Normally only used within
 
 ## DOM
 
-This is [virtual-hyperscript](https://github.com/Matt-Esch/virtual-dom/tree/master/virtual-hyperscript). 'h' is equivalent to 'dom'.
+This is [virtual-hyperscript](https://github.com/Matt-Esch/virtual-dom/tree/master/virtual-hyperscript). 'dom' is equivalent to 'h'.
 
 ## SVG
 
