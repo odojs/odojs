@@ -10,6 +10,7 @@ Supports:
 - Components can be nested
 - Widgets get access to the raw DOM elements
 - Components can be rendered on the server as a string
+- This can be used as the View in MVC type applications
 
 Suggestions:
 - Use with other libraries to help with events / observations and data manipulation
@@ -34,13 +35,21 @@ var App = component({
 });
 
 var scene = App.mount(document.body, 'World!');
-
+re
 setTimeout(function () {
   scene.update('New Zealand!');
 }, 2000)
 ```
 
 # API
+
+Jump links
+- [Component](#component)
+- [Widget](#widget)
+- [Hook](#hook)
+- [DOM](#dom)
+- [SVG](#svg)
+- [Partial](#partial)
 
 Documentation for some parts of virtual-dom is not available, with this library it shouldn't be needed, but just in case there is a [work in progress page for virtual-dom documentation](http://hackersome.com/p/littleloops/virtual-dom-docs-wip) that does a good job describing the internals.
 
@@ -49,13 +58,10 @@ Multiple sections of odojs are available off the root require.
 var odojs = require('odojs');
 var component = odojs.component;
 var widget = odojs.widget;
+var hook = odojs.hook;
 var dom = odojs.dom;
 var svg = odojs.svg;
 var partial = odojs.partial;
-```
-
-```coffee
-{ component, widget, dom, svg, partial } = require 'odojs
 ```
 
 ## Component
@@ -103,7 +109,7 @@ scene.unmount()
 ```
 
 ### string = Component.stringify(state)
-Renders the Component as a string. Widgets return empty string. Can be used in Node.js on the server.
+Renders the Component as a string. Widgets and hooks return empty string. Can be used in Node.js on the server.
 ```js
 var Test = component({
   render: function(state) {
@@ -162,6 +168,9 @@ var App = component({
 var scene = App.mount(document.body, { lat: 51, lng: 0, zoom: 8 });
 ```
 
+### vdom Widget(state)
+Renders a representation of the widget in virtual dom. Normally only used within a Component.
+
 ### vdom or dom = WidgetSpec.render(state)
 The same as Component, this method is passed state and expected to return either a browser dom element or virtual dom element. This is the only required method.
 
@@ -177,8 +186,97 @@ Called during update after `update` if it exists. All properties on the old widg
 ### WidgetSpec.beforeUnmount(el)
 Called just before the widget is removed from the browser dom. Can be used to unbind and cleanup anything else other Javascript code has been using.
 
-### vdom Widget(state)
-Renders a representation of the widget in virtual dom. Normally only used within a Component.
+
+## Hook
+A hook wraps another component prives three callbacks to control how the dom changes. `enter` is called when the component is mounted, `exit` is called when it is unmounted and `transition` is called when the component is changed. All callbacks are optional.
+
+Hooks are perfect for animating component changes.
+
+Create a hook by passing a specification to the hook method.
+
+```js
+var Pane1 = component({ render: function(state) {
+  return dom('p', ['PANE ONE ' + state.name]);
+}});
+
+var Pane2 = component({ render: function(state) {
+  return dom('p', ['PANE TWO ' + state.name]);
+}});
+
+var Wizard = hook({
+  enter: function(item, state, options) {
+    // default behaviour
+    item.mount();
+  },
+  transition: function(item1, item2, state, options) {
+    if (options === 'forward') {
+      animation.slideOutLeft(item1.target, function() {
+        item1.unmount();
+        animation.slideInRight(item2.target);
+        item2.mount();
+      });
+    } else if (options === 'back') {
+      animation.slideOutRight(item1.target, function() {
+        item1.unmount();
+        animation.slideInLeft(item2.target);
+        item2.mount();
+      });
+    } else {
+      // default behaviour
+      item1.unmount();
+      item2.mount();
+    }
+  },
+  exit: function(item, state, options) {
+    // default behaviour
+    item.unmount();
+  }
+});
+
+var App = component({
+  render: function(state) {
+    return dom('div.wrapper.grid', [
+      Wizard(state.component, state.state, 'forward')
+    ]);
+  }
+});
+
+var scene = App.mount(document.body, {
+  component: Pane1,
+  state: { name: 'Tim' }
+});
+
+setTimeout((function() {
+  scene.update({
+    component: Pane2,
+    state: { name: 'Bob' }
+  });
+}), 3000);
+```
+
+### vdom Hook(component, state, options)
+Renders a representation of the hook in virtual dom. Normally only used within a Component.
+```js
+Wizard(Pane1, { name: 'Bob' }, 'forward);
+```
+
+### HookSpec.enter(item, state, options)
+Called when the hook is rendered for the first time, or if a component has been newly passed in. `item.target` is the raw dom element. `item.mount()` should be called at some point to complete adding the element into the dom.
+```js
+// slide up into the page using the velocity animation library
+enter: function (item, state, options) {
+  item.target.style.display = 'none';
+  velocity(item.target, { translateY: [0, '2000px'] }, { display: 'auto' });
+  item.mount();
+}
+```
+
+### HookSpec.transition(item1, item2, state, options)
+Called when the component is different. `item1.target` and `item2.target` are the raw dom elements. `item1.unmount()` and `item2.mount()` should both be called at some point to complete the transition.
+
+### HookSpec.exit(item, state, options)
+Called when a component is set to null and when the hook is unmounted. When the hook is unmounted there is no time to animate as the dom element is removed immediately. `item.target` is the raw dom element. `item.unmount()` should be called at some point.
+
 
 ## DOM
 
