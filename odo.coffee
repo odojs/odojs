@@ -17,4 +17,5 @@ module.exports =
   svg: require 'virtual-dom/virtual-hyperscript/svg'
   partial: require 'vdom-thunk'
   compose: require './compose'
+  main: require './main'
   hook: require './hook'
