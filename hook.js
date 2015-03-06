@@ -11,20 +11,22 @@ extend = require('extend');
 
 dom = require('virtual-dom/h');
 
+require('setimmediate');
+
 Hook = (function() {
-  function Hook(component, spec, state, options) {
+  function Hook(component, spec, state, params) {
     this.component = component;
     this.spec = spec;
     this.state = state;
-    this.options = options;
+    this.params = params;
   }
 
   Hook.prototype.type = 'Widget';
 
   Hook.prototype.create = function() {
-    this.item = compose(this.component, this.state, this.el);
+    this.item = compose(this.component, this.state, this.params, this.el);
     if (this.spec.enter != null) {
-      return this.spec.enter.call(this.spec, this.item, this.state, this.options);
+      return this.spec.enter.call(this.spec, this.item, this.state, this.params);
     } else {
       return this.item.mount();
     }
@@ -32,7 +34,7 @@ Hook = (function() {
 
   Hook.prototype.remove = function() {
     if (this.spec.exit != null) {
-      return this.spec.exit.call(this.spec, this.item, this.state, this.options);
+      return this.spec.exit.call(this.spec, this.item, this.state, this.params);
     } else {
       return this.item.unmount();
     }
@@ -55,7 +57,7 @@ Hook = (function() {
       if (this.component == null) {
         return el;
       }
-      return el(this.item.update(this.state));
+      return el(this.item.update(this.state, this.params));
     }
     if (prev.component == null) {
       this.create();
@@ -66,9 +68,9 @@ Hook = (function() {
       return el;
     }
     olditem = this.item;
-    this.item = compose(this.component, this.state, el);
+    this.item = compose(this.component, this.state, this.params, el);
     if (this.spec.transition != null) {
-      this.spec.transition.call(this.spec, olditem, this.item, this.state, this.options);
+      this.spec.transition.call(this.spec, olditem, this.item, this.state, this.params);
     } else {
       olditem.unmount();
       this.item.mount();
@@ -87,8 +89,8 @@ Hook = (function() {
 hook = function(spec) {
   var Component, plugin, _i, _len, _ref;
   spec = extend({}, spec);
-  Component = function(component, state, options) {
-    return new Hook(component, spec, state, options);
+  Component = function(component, state, params) {
+    return new Hook(component, spec, state, params);
   };
   Component.use = function(plugin) {
     return plugin(Component, spec);

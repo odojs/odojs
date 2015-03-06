@@ -18,10 +18,10 @@ dedupe = function(query) {
 };
 
 module.exports = function(component, spec) {
-  return component.query = function(state) {
+  return component.query = function(params) {
     if (spec.query == null) {
       return {};
     }
-    return dedupe(spec.query.call(component, state));
+    return dedupe(spec.query.call(component, params));
   };
 };

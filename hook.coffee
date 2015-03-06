@@ -3,19 +3,20 @@ compose = require './compose'
 widget = require './widget'
 extend = require 'extend'
 dom = require 'virtual-dom/h'
+require 'setimmediate'
 
 class Hook
-  constructor: (@component, @spec, @state, @options) ->
+  constructor: (@component, @spec, @state, @params) ->
   type: 'Widget'
   create: ->
-    @item = compose @component, @state, @el
+    @item = compose @component, @state, @params, @el
     if @spec.enter?
-      @spec.enter.call @spec, @item, @state, @options
+      @spec.enter.call @spec, @item, @state, @params
     else
       @item.mount()
   remove: ->
     if @spec.exit?
-      @spec.exit.call @spec, @item, @state, @options
+      @spec.exit.call @spec, @item, @state, @params
     else
       @item.unmount()
   init: ->
@@ -27,7 +28,7 @@ class Hook
     # same component, no transition
     if prev.component is @component
       return el if !@component?
-      return el @item.update @state
+      return el @item.update @state, @params
     # nothing previously
     if !prev.component?
       @create()
@@ -38,9 +39,9 @@ class Hook
       return el
     # transition
     olditem = @item
-    @item = compose @component, @state, el
+    @item = compose @component, @state, @params, el
     if @spec.transition?
-      @spec.transition.call @spec, olditem, @item, @state, @options
+      @spec.transition.call @spec, olditem, @item, @state, @params
     else
       olditem.unmount()
       @item.mount()
@@ -49,8 +50,8 @@ class Hook
 
 hook = (spec) ->
   spec = extend {}, spec
-  Component = (component, state, options) ->
-    new Hook component, spec, state, options
+  Component = (component, state, params) ->
+    new Hook component, spec, state, params
   Component.use = (plugin) -> plugin Component, spec
   for plugin in hook.plugins
     Component.use plugin

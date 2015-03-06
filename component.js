@@ -6,8 +6,8 @@ extend = require('extend');
 component = function(spec) {
   var Component, plugin, _i, _len, _ref;
   spec = extend({}, spec);
-  Component = function(state) {
-    return spec.render.call(spec, state);
+  Component = function(state, params) {
+    return spec.render.call(spec, state, params);
   };
   Component.use = function(plugin) {
     return plugin(Component, spec);

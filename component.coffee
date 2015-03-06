@@ -2,8 +2,8 @@ extend = require 'extend'
 
 component = (spec) ->
   spec = extend {}, spec
-  Component = (state) ->
-    spec.render.call spec, state
+  Component = (state, params) ->
+    spec.render.call spec, state, params
   Component.use = (plugin) -> plugin Component, spec
   
   for plugin in component.plugins

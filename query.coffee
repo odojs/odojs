@@ -9,6 +9,6 @@ dedupe = (query) ->
   result
 
 module.exports = (component, spec) ->
-  component.query = (state) ->
+  component.query = (params) ->
     return {} if !spec.query?
-    dedupe spec.query.call component, state
+    dedupe spec.query.call component, params

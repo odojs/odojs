@@ -1,14 +1,12 @@
-main = require './main'
-require 'setimmediate'
+compose = require './compose'
 
 module.exports = (component, spec) ->
-  component.mount = (el, state) ->
-    _render = (state) -> component state
-    scene = main ((state) -> _render state), state
-    el.appendChild scene.target
-    update: (state) ->
-      setImmediate -> scene.update state
+  component.mount = (el, state, params) ->
+    scene = compose component, state, params, el
+    scene.mount()
+    update: (state, params) ->
+      scene.update state, params
+    apply: (state, params) ->
+      scene.apply state, params
     unmount: ->
-      # patch against nothing for unmount
-      _render = -> new VText ''
-      scene.update {}
+      scene.unmount()

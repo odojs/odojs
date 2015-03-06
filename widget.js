@@ -5,17 +5,20 @@ create = require('virtual-dom/create-element');
 
 extend = require('extend');
 
+require('setimmediate');
+
 Widget = (function() {
-  function Widget(spec, state) {
+  function Widget(spec, state, params) {
     this.spec = spec;
     this.state = state;
+    this.params = params;
   }
 
   Widget.prototype.type = 'Widget';
 
   Widget.prototype.init = function() {
     var dom;
-    this.el = this.spec.render.call(this, this.state);
+    this.el = this.spec.render.call(this, this.state, this.params);
     dom = create(this.el);
     if (dom !== null) {
       this.el = dom;
@@ -23,7 +26,7 @@ Widget = (function() {
     setImmediate((function(_this) {
       return function() {
         if (_this.spec.afterMount != null) {
-          return _this.spec.afterMount.call(_this, _this.el, _this.state);
+          return _this.spec.afterMount.call(_this, _this.el, _this.state, _this.params);
         }
       };
     })(this));
@@ -40,7 +43,7 @@ Widget = (function() {
     }
     result = el;
     if (this.spec.update != null) {
-      result = this.spec.update.call(this, el, this.state, prev);
+      result = this.spec.update.call(this, el, this.state, this.params, prev);
       if (result !== null) {
         dom = create(result);
         if (dom !== null) {
@@ -49,14 +52,14 @@ Widget = (function() {
       }
     }
     if (this.spec.onUpdate != null) {
-      this.spec.onUpdate.call(this, result, this.state, prev);
+      this.spec.onUpdate.call(this, result, this.state, this.params, prev);
     }
     return result;
   };
 
   Widget.prototype.destroy = function(el) {
     if (this.spec.beforeUnmount != null) {
-      return this.spec.beforeUnmount.call(this, el, this.state);
+      return this.spec.beforeUnmount.call(this, el, this.state, this.params);
     }
   };
 
@@ -67,8 +70,8 @@ Widget = (function() {
 widget = function(spec) {
   var Component, plugin, _i, _len, _ref;
   spec = extend({}, spec);
-  Component = function(state) {
-    return new Widget(spec, state);
+  Component = function(state, params) {
+    return new Widget(spec, state, params);
   };
   Component.use = function(plugin) {
     return plugin(Component, spec);
