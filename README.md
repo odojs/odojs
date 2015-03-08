@@ -1,5 +1,7 @@
 # Odojs
 
+[![Join the chat at https://gitter.im/odojs/odojs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/odojs/odojs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Simple virtual dom components using the excellent [virtual-dom](https://github.com/Matt-Esch/virtual-dom) library.
 
 Supports:
