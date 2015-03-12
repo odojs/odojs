@@ -19,25 +19,33 @@ Hook = (function() {
     this.spec = spec;
     this.state = state;
     this.params = params;
+    if (this.spec.enter == null) {
+      this.spec.enter = function(item) {
+        return this.item.mount();
+      };
+    }
+    if (this.spec.exit == null) {
+      this.spec.exit = function(item) {
+        return this.item.unmount();
+      };
+    }
+    if (this.spec.transition == null) {
+      this.spec.transition = function(olditem, newitem) {
+        olditem.unmount();
+        return item.mount();
+      };
+    }
   }
 
   Hook.prototype.type = 'Widget';
 
   Hook.prototype.create = function() {
     this.item = compose(this.component, this.state, this.params, this.el);
-    if (this.spec.enter != null) {
-      return this.spec.enter.call(this.spec, this.item, this.state, this.params);
-    } else {
-      return this.item.mount();
-    }
+    return this.spec.enter.call(this.spec, this.item, this.state, this.params);
   };
 
   Hook.prototype.remove = function() {
-    if (this.spec.exit != null) {
-      return this.spec.exit.call(this.spec, this.item, this.state, this.params);
-    } else {
-      return this.item.unmount();
-    }
+    return this.spec.exit.call(this.spec, this.item, this.state, this.params);
   };
 
   Hook.prototype.init = function() {
@@ -69,12 +77,7 @@ Hook = (function() {
     }
     olditem = this.item;
     this.item = compose(this.component, this.state, this.params, el);
-    if (this.spec.transition != null) {
-      this.spec.transition.call(this.spec, olditem, this.item, this.state, this.params);
-    } else {
-      olditem.unmount();
-      this.item.mount();
-    }
+    this.spec.transition.call(this.spec, olditem, this.item, this.state, this.params);
     return el;
   };
 

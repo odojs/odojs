@@ -7,18 +7,20 @@ require 'setimmediate'
 
 class Hook
   constructor: (@component, @spec, @state, @params) ->
+    if !@spec.enter?
+      @spec.enter = (item) -> @item.mount()
+    if !@spec.exit?
+      @spec.exit = (item) -> @item.unmount()
+    if !@spec.transition?
+      @spec.transition = (olditem, newitem) ->
+        olditem.unmount()
+        item.mount()
   type: 'Widget'
   create: ->
     @item = compose @component, @state, @params, @el
-    if @spec.enter?
-      @spec.enter.call @spec, @item, @state, @params
-    else
-      @item.mount()
+    @spec.enter.call @spec, @item, @state, @params
   remove: ->
-    if @spec.exit?
-      @spec.exit.call @spec, @item, @state, @params
-    else
-      @item.unmount()
+    @spec.exit.call @spec, @item, @state, @params
   init: ->
     @el = create dom 'div'
     setImmediate => @create()
@@ -40,11 +42,7 @@ class Hook
     # transition
     olditem = @item
     @item = compose @component, @state, @params, el
-    if @spec.transition?
-      @spec.transition.call @spec, olditem, @item, @state, @params
-    else
-      olditem.unmount()
-      @item.mount()
+    @spec.transition.call @spec, olditem, @item, @state, @params
     el
   destroy: -> @remove()
 
