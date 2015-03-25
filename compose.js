@@ -24,7 +24,7 @@ module.exports = function(component, state, params, parent) {
   status = 'init';
   tree = null;
   target = null;
-  time('dom created', function() {
+  time('scene created', function() {
     tree = component(state, params);
     return target = create(tree);
   });
@@ -34,7 +34,7 @@ module.exports = function(component, state, params, parent) {
       throw new Error('Mutant rampage');
     }
     status = 'rendering';
-    time('dom updated', function() {
+    time('scene updated', function() {
       var newTree, patches;
       newTree = component(state, params);
       patches = diff(tree, newTree);

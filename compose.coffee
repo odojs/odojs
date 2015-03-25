@@ -14,7 +14,7 @@ module.exports = (component, state, params, parent) ->
   status = 'init'
   tree = null
   target = null
-  time 'dom created', ->
+  time 'scene created', ->
     tree = component state, params
     target = create tree
   status = 'idle'
@@ -23,7 +23,7 @@ module.exports = (component, state, params, parent) ->
     if status is 'rendering'
       throw new Error 'Mutant rampage'
     status = 'rendering'
-    time 'dom updated', ->
+    time 'scene updated', ->
       newTree = component state, params
       patches = diff tree, newTree
       target = patch target, patches
