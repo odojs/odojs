@@ -4,20 +4,30 @@ patch = require 'virtual-dom/patch'
 VText = require 'virtual-dom/vnode/vtext'
 raf = require 'raf'
 
+time = (name, cb) ->
+  startedAt = new Date().getTime()
+  cb()
+  fin = new Date().getTime()
+  console.log "* #{name} in #{fin - startedAt}ms"
+
 module.exports = (component, state, params, parent) ->
   status = 'init'
-  tree = component state, params
-  target = create tree
+  tree = null
+  target = null
+  time 'dom created', ->
+    tree = component state, params
+    target = create tree
   status = 'idle'
   
   apply = (state, params) ->
     if status is 'rendering'
       throw new Error 'Mutant rampage'
     status = 'rendering'
-    newTree = component state, params
-    patches = diff tree, newTree
-    target = patch target, patches
-    tree = newTree
+    time 'dom updated', ->
+      newTree = component state, params
+      patches = diff tree, newTree
+      target = patch target, patches
+      tree = newTree
     status = 'idle'
   
   payload = null
@@ -28,16 +38,21 @@ module.exports = (component, state, params, parent) ->
   update: (state, params) ->
     if status is 'rendering'
       throw new Error 'Mutant rampage'
-    if payload is null and status isnt 'pending'
+    # pending apply, update state and params
+    if status is 'pending'
+      payload =
+        state: state
+        params: params
+      return
+    # wait for animation frame to apply
+    if status is 'idle'
       status = 'pending'
       payload =
         state: state
         params: params
       raf ->
         # have already applied the state
-        if payload is null
-          status = 'idle'
-          return
+        return if payload is null
         apply payload.state, payload.params
         payload = null
   apply: apply
