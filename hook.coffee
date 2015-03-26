@@ -1,6 +1,5 @@
 create = require 'virtual-dom/create-element'
 compose = require './compose'
-widget = require './widget'
 extend = require 'extend'
 dom = require 'virtual-dom/h'
 require 'setimmediate'

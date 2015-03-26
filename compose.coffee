@@ -4,11 +4,16 @@ patch = require 'virtual-dom/patch'
 VText = require 'virtual-dom/vnode/vtext'
 raf = require 'raf'
 
-time = (name, cb) ->
+time = (description, cb) ->
   startedAt = new Date().getTime()
   cb()
-  fin = new Date().getTime()
-  console.log "* #{name} in #{fin - startedAt}ms"
+  endedAt = new Date().getTime()
+  if window?.hub?
+    window.hub.emit '{description} in {duration}ms',
+      description: description
+      startedAt: startedAt
+      endedAt: endedAt
+      duration: endedAt - startedAt
 
 module.exports = (component, state, params, parent) ->
   status = 'init'

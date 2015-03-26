@@ -11,12 +11,19 @@ VText = require('virtual-dom/vnode/vtext');
 
 raf = require('raf');
 
-time = function(name, cb) {
-  var fin, startedAt;
+time = function(description, cb) {
+  var endedAt, startedAt;
   startedAt = new Date().getTime();
   cb();
-  fin = new Date().getTime();
-  return console.log("* " + name + " in " + (fin - startedAt) + "ms");
+  endedAt = new Date().getTime();
+  if ((typeof window !== "undefined" && window !== null ? window.hub : void 0) != null) {
+    return window.hub.emit('{description} in {duration}ms', {
+      description: description,
+      startedAt: startedAt,
+      endedAt: endedAt,
+      duration: endedAt - startedAt
+    });
+  }
 };
 
 module.exports = function(component, state, params, parent) {
