@@ -1,4 +1,4 @@
-stringify = require 'virtual-dom-stringify'
+stringify = require 'vdom-to-html'
 
 module.exports = (component, spec) ->
   component.stringify = (state, params) ->
