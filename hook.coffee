@@ -29,7 +29,8 @@ class Hook
     # same component, no transition
     if prev.component is @component
       return el if !@component?
-      return el @item.update @state, @params
+      @item.update @state, @params
+      return el
     # nothing previously
     if !prev.component?
       @create()
