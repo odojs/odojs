@@ -47,7 +47,7 @@ Hook = (function() {
   };
 
   Hook.prototype.init = function() {
-    this.el = create(dom('div'));
+    this.el = create(dom('div.hook'));
     setImmediate((function(_this) {
       return function() {
         return _this.create();

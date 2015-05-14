@@ -21,7 +21,7 @@ class Hook
   remove: ->
     @spec.exit.call @spec, @item, @state, @params
   init: ->
-    @el = create dom 'div'
+    @el = create dom 'div.hook'
     setImmediate => @create()
     @el
   update: (prev, el) ->

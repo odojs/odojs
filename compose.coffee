@@ -3,6 +3,13 @@ diff = require 'virtual-dom/diff'
 patch = require 'virtual-dom/patch'
 VText = require 'virtual-dom/vnode/vtext'
 raf = require 'raf'
+virtualize = require 'vdom-virtualize'
+
+# hack for virtual-dom trying to set contentEditable to ''
+removeContentEditable = (vnode) ->
+  delete vnode.properties?.contentEditable
+  return if !vnode.children
+  removeContentEditable node for node in vnode.children
 
 time = (description, cb) ->
   startedAt = new Date().getTime()
@@ -21,7 +28,6 @@ module.exports = (component, state, params, parent) ->
   target = null
   time 'scene created', ->
     tree = component state, params
-    target = create tree
   status = 'idle'
   
   apply = (state, params) ->
@@ -39,7 +45,13 @@ module.exports = (component, state, params, parent) ->
   target: target
   status: status
   mount: ->
-    parent.appendChild target
+    existing = virtualize parent
+    removeContentEditable existing
+    patches = diff existing, tree
+    console.log existing
+    console.log tree
+    console.log patches
+    target = patch parent, patches
   update: (state, params) ->
     if status is 'rendering'
       throw new Error 'Mutant rampage'
