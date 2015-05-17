@@ -1,8 +1,8 @@
+raf = require 'raf'
 create = require 'virtual-dom/create-element'
 diff = require 'virtual-dom/diff'
 patch = require 'virtual-dom/patch'
 VText = require 'virtual-dom/vnode/vtext'
-raf = require 'raf'
 virtualize = require 'vdom-virtualize'
 
 # hack for virtual-dom trying to set contentEditable to ''
@@ -11,25 +11,26 @@ removeContentEditable = (vnode) ->
   return if !vnode.children
   removeContentEditable node for node in vnode.children
 
-time = (description, cb) ->
-  startedAt = new Date().getTime()
-  cb()
-  endedAt = new Date().getTime()
-  if window?.hub?
-    window.hub.emit '{description} in {duration}ms',
-      description: description
-      startedAt: startedAt
-      endedAt: endedAt
-      duration: endedAt - startedAt
+module.exports = (component, state, params, parent, options) ->
+  time = (description, cb) -> cb()
+  if options?.hub?
+    time = (description, cb) ->
+      startedAt = new Date().getTime()
+      cb()
+      endedAt = new Date().getTime()
+      options.hub.emit 'Odo.js {description} in {duration}ms',
+          description: description
+          startedAt: startedAt
+          endedAt: endedAt
+          duration: endedAt - startedAt
 
-module.exports = (component, state, params, parent) ->
   status = 'init'
   tree = null
   target = null
   time 'scene created', ->
     tree = component state, params
   status = 'idle'
-  
+
   apply = (state, params) ->
     if status is 'rendering'
       throw new Error 'Mutant rampage'
@@ -40,7 +41,7 @@ module.exports = (component, state, params, parent) ->
       target = patch target, patches
       tree = newTree
     status = 'idle'
-  
+
   payload = null
   target: target
   status: status
@@ -48,9 +49,6 @@ module.exports = (component, state, params, parent) ->
     existing = virtualize parent
     removeContentEditable existing
     patches = diff existing, tree
-    console.log existing
-    console.log tree
-    console.log patches
     target = patch parent, patches
   update: (state, params) ->
     if status is 'rendering'

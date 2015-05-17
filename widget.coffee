@@ -4,9 +4,11 @@ require 'setimmediate'
 
 class Widget
   constructor: (@spec, @state, @params) ->
-  type: 'Widget'
-  init: ->
     @el = @spec.render.call @, @state, @params
+  type: 'Widget'
+  render: ->
+    @el
+  init: ->
     dom = create @el
     @el = dom if dom isnt null
     setImmediate =>

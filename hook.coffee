@@ -15,13 +15,23 @@ class Hook
         olditem.unmount()
         item.mount()
   type: 'Widget'
+  render: ->
+    if @spec.render?
+      @spec.render.call @spec, @component, @state, @params
+    else
+      dom 'div.hook', @component
   create: ->
     @item = compose @component, @state, @params, @el
     @spec.enter.call @spec, @item, @state, @params
   remove: ->
     @spec.exit.call @spec, @item, @state, @params
   init: ->
-    @el = create dom 'div.hook'
+    el = null
+    if @spec.init?
+      el = @spec.init.call @spec, @state, @params
+    else
+      el = dom 'div.hook'
+    @el = create el
     setImmediate => @create()
     @el
   update: (prev, el) ->

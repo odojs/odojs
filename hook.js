@@ -37,6 +37,14 @@ Hook = (function() {
 
   Hook.prototype.type = 'Widget';
 
+  Hook.prototype.render = function() {
+    if (this.spec.render != null) {
+      return this.spec.render.call(this.spec, this.component, this.state, this.params);
+    } else {
+      return dom('div.hook', this.component);
+    }
+  };
+
   Hook.prototype.create = function() {
     this.item = compose(this.component, this.state, this.params, this.el);
     return this.spec.enter.call(this.spec, this.item, this.state, this.params);
@@ -47,7 +55,14 @@ Hook = (function() {
   };
 
   Hook.prototype.init = function() {
-    this.el = create(dom('div.hook'));
+    var el;
+    el = null;
+    if (this.spec.init != null) {
+      el = this.spec.init.call(this.spec, this.state, this.params);
+    } else {
+      el = dom('div.hook');
+    }
+    this.el = create(el);
     setImmediate((function(_this) {
       return function() {
         return _this.create();

@@ -1,8 +1,8 @@
 compose = require './compose'
 
 module.exports = (component, spec) ->
-  component.mount = (el, state, params) ->
-    scene = compose component, state, params, el
+  component.mount = (el, state, params, options) ->
+    scene = compose component, state, params, el, options
     scene.mount()
     update: (state, params) ->
       scene.update state, params
