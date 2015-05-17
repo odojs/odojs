@@ -1,6 +1,6 @@
 {
   "name": "odojs",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "Simple virtual-dom components",
   "main": "odo.js",
   "scripts": {
