@@ -19,7 +19,7 @@ Suggestions:
 
 [![NPM version](https://badge.fury.io/js/odojs.svg)](http://badge.fury.io/js/odojs)
 
-Inspired by [deku](https://github.com/segmentid/deku/).
+Inspired by [deku](https://github.com/dekujs/deku).
 
 Wiki links
 - [API](https://github.com/odojs/odojs/wiki/home)
