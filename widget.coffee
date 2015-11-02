@@ -3,8 +3,8 @@ extend = require 'extend'
 require 'setimmediate'
 
 class Widget
-  constructor: (@spec, @state, @params) ->
-    @el = @spec.render.call @, @state, @params
+  constructor: (@spec, @state, @params, @hub) ->
+    @el = @spec.render.call @, @state, @params, @hub
   type: 'Widget'
   render: ->
     @el
@@ -13,7 +13,7 @@ class Widget
     @el = dom if dom isnt null
     setImmediate =>
       if @spec.afterMount?
-        @spec.afterMount.call @, @el, @state, @params
+        @spec.afterMount.call @, @el, @state, @params, @hub
     @el
   update: (prev, el) ->
     # copy state
@@ -21,21 +21,21 @@ class Widget
       @[k] = v if @[k] is undefined
     result = el
     if @spec.update?
-      result = @spec.update.call @, el, @state, @params, prev
+      result = @spec.update.call @, el, @state, @params, @hub, prev
       if result isnt null
         dom = create result
         result = dom if dom isnt null
     if @spec.onUpdate?
-      @spec.onUpdate.call @, result, @state, @params, prev
+      @spec.onUpdate.call @, result, @state, @params, @hub, prev
     result
   destroy: (el) ->
     if @spec.beforeUnmount?
-      @spec.beforeUnmount.call @, el, @state, @params
+      @spec.beforeUnmount.call @, el, @state, @params, @hub
 
 widget = (spec) ->
   spec = extend {}, spec
-  Component = (state, params) ->
-    new Widget spec, state, params
+  Component = (state, params, hub) ->
+    new Widget spec, state, params, hub
   Component.use = (plugin) -> plugin Component, spec
   for plugin in widget.plugins
     Component.use plugin

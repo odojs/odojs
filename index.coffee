@@ -15,3 +15,4 @@ module.exports =
   partial: require 'vdom-thunk'
   compose: require './compose'
   hook: require './hook'
+  hub: require './hub'

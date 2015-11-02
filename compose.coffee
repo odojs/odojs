@@ -11,7 +11,7 @@ removeContentEditable = (vnode) ->
   return if !vnode.children
   removeContentEditable node for node in vnode.children
 
-module.exports = (component, state, params, parent, options) ->
+module.exports = (component, state, params, hub, parent, options) ->
   time = (description, cb) -> cb()
   if options?.hub?
     time = (description, cb) ->
@@ -28,15 +28,15 @@ module.exports = (component, state, params, parent, options) ->
   tree = null
   target = null
   time 'scene created', ->
-    tree = component state, params
+    tree = component state, params, hub
   status = 'idle'
 
-  apply = (state, params) ->
+  apply = (state, params, hub) ->
     if status is 'rendering'
       throw new Error 'Mutant rampage'
     status = 'rendering'
     time 'scene updated', ->
-      newTree = component state, params
+      newTree = component state, params, hub
       patches = diff tree, newTree
       target = patch target, patches
       tree = newTree
@@ -50,7 +50,7 @@ module.exports = (component, state, params, parent, options) ->
     removeContentEditable existing
     patches = diff existing, tree
     target = patch parent, patches
-  update: (state, params) ->
+  update: (state, params, hub) ->
     if status is 'rendering'
       throw new Error 'Mutant rampage'
     # pending apply, update state and params
@@ -58,6 +58,7 @@ module.exports = (component, state, params, parent, options) ->
       payload =
         state: state
         params: params
+        hub: hub
       return
     # wait for animation frame to apply
     if status is 'idle'
@@ -65,10 +66,11 @@ module.exports = (component, state, params, parent, options) ->
       payload =
         state: state
         params: params
+        hub: hub
       raf ->
         # have already applied the state
         return if payload is null
-        apply payload.state, payload.params
+        apply payload.state, payload.params, payload.hub
         payload = null
   apply: apply
   unmount: ->

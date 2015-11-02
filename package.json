@@ -2,7 +2,7 @@
   "name": "odojs",
   "version": "4.2.0",
   "description": "Simple virtual-dom components",
-  "main": "odo.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,6 +19,8 @@
   "homepage": "https://github.com/odojs/odojs",
   "dependencies": {
     "extend": "2.*",
+    "odo-async": "1.0.1",
+    "odo-template": "1.0.0",
     "raf": "2.*",
     "setimmediate": "1.*",
     "vdom-thunk": "3.*",

@@ -5,7 +5,7 @@ dom = require 'virtual-dom/h'
 require 'setimmediate'
 
 class Hook
-  constructor: (@component, @spec, @state, @params) ->
+  constructor: (@component, @spec, @state, @params, @hub) ->
     if !@spec.enter?
       @spec.enter = (item) -> @item.mount()
     if !@spec.exit?
@@ -17,18 +17,18 @@ class Hook
   type: 'Widget'
   render: ->
     if @spec.render?
-      @spec.render.call @spec, @component, @state, @params
+      @spec.render.call @spec, @component, @state, @params, @hub
     else
       dom 'div.hook', @component
   create: ->
-    @item = compose @component, @state, @params, @el
-    @spec.enter.call @spec, @item, @state, @params
+    @item = compose @component, @state, @params, @hub, @el
+    @spec.enter.call @spec, @item, @state, @params, @hub
   remove: ->
-    @spec.exit.call @spec, @item, @state, @params
+    @spec.exit.call @spec, @item, @state, @params, @hub
   init: ->
     el = null
     if @spec.init?
-      el = @spec.init.call @spec, @state, @params
+      el = @spec.init.call @spec, @state, @params, @hub
     else
       el = dom 'div.hook'
     @el = create el
@@ -39,7 +39,7 @@ class Hook
     # same component, no transition
     if prev.component is @component
       return el if !@component?
-      @item.update @state, @params
+      @item.update @state, @params, @hub
       return el
     # nothing previously
     if !prev.component?
@@ -51,15 +51,15 @@ class Hook
       return el
     # transition
     olditem = @item
-    @item = compose @component, @state, @params, el
-    @spec.transition.call @spec, olditem, @item, @state, @params
+    @item = compose @component, @state, @params, @hub, el
+    @spec.transition.call @spec, olditem, @item, @state, @params, @hub
     el
   destroy: -> @remove()
 
 hook = (spec) ->
   spec = extend {}, spec
-  Component = (component, state, params) ->
-    new Hook component, spec, state, params
+  Component = (component, state, params, hub) ->
+    new Hook component, spec, state, params, hub
   Component.use = (plugin) -> plugin Component, spec
   for plugin in hook.plugins
     Component.use plugin
