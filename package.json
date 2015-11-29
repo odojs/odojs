@@ -19,7 +19,7 @@
   "homepage": "https://github.com/odojs/odojs",
   "dependencies": {
     "extend": "2.*",
-    "odo-async": "1.0.1",
+    "odo-async": "1.0.2",
     "odo-template": "1.0.0",
     "raf": "2.*",
     "setimmediate": "1.*",
