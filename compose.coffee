@@ -43,8 +43,8 @@ module.exports = (component, state, params, hub, parent, options) ->
     status = 'idle'
 
   payload = null
-  target: target
-  status: status
+  target: -> target
+  status: -> status
   mount: ->
     existing = virtualize parent
     removeContentEditable existing

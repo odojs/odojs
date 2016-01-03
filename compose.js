@@ -72,8 +72,12 @@ module.exports = function(component, state, params, hub, parent, options) {
   };
   payload = null;
   return {
-    target: target,
-    status: status,
+    target: function() {
+      return target;
+    },
+    status: function() {
+      return status;
+    },
     mount: function() {
       var existing, patches;
       existing = virtualize(parent);
