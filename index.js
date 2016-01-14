@@ -21,5 +21,6 @@ module.exports = {
   partial: require('vdom-thunk'),
   compose: require('./compose'),
   hook: require('./hook'),
-  hub: require('./hub')
+  hub: require('./hub'),
+  thunk: require('./thunk')
 };

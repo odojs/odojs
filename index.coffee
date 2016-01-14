@@ -16,3 +16,4 @@ module.exports =
   compose: require './compose'
   hook: require './hook'
   hub: require './hub'
+  thunk: require './thunk'
