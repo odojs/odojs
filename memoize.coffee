@@ -1,8 +1,8 @@
 module.exports = (cache) ->
   # default cache is forever!
   if !cache?
-    _data = {}
     cache = ->
+      _data = {}
       get: (key) -> _data[key]
       set: (key, value) -> _data[key] = value
   (fn) ->
