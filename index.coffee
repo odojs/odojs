@@ -17,3 +17,4 @@ module.exports =
   hook: require './hook'
   hub: require './hub'
   thunk: require './thunk'
+  memoize: require './memoize'
