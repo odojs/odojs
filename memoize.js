@@ -3,13 +3,15 @@ module.exports = function(cache) {
   var _data;
   if (cache == null) {
     _data = {};
-    cache = {
-      get: function(key) {
-        return _data[key];
-      },
-      set: function(key, value) {
-        return _data[key] = value;
-      }
+    cache = function() {
+      return {
+        get: function(key) {
+          return _data[key];
+        },
+        set: function(key, value) {
+          return _data[key] = value;
+        }
+      };
     };
   }
   return function(fn) {
