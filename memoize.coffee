@@ -11,11 +11,9 @@ module.exports = (cache) ->
       key = JSON.stringify [state, params]
       entry = _cache.get key
       if entry?
-        console.log 'Cache hit'
         entry.hub = hub
         return entry.vdom
 
-      console.log 'Cache miss'
       slavehub = emit: (m, p, cb) -> entry.hub.emit m, p, cb
       entry =
         hub: hub

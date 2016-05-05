@@ -20,11 +20,9 @@ module.exports = function(cache) {
       key = JSON.stringify([state, params]);
       entry = _cache.get(key);
       if (entry != null) {
-        console.log('Cache hit');
         entry.hub = hub;
         return entry.vdom;
       }
-      console.log('Cache miss');
       slavehub = {
         emit: function(m, p, cb) {
           return entry.hub.emit(m, p, cb);
