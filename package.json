@@ -18,14 +18,14 @@
   "readmeFilename": "README.md",
   "homepage": "https://github.com/odojs/odojs",
   "dependencies": {
-    "extend": "2.*",
+    "extend": "3.*",
     "odo-async": "1.0.2",
     "odo-template": "1.0.0",
-    "raf": "2.*",
+    "raf": "3.*",
     "setimmediate": "1.*",
     "vdom-thunk": "3.*",
     "vdom-to-html": "2.*",
-    "vdom-virtualize": "0.0.7",
+    "vdom-virtualize": "2.0.0",
     "virtual-dom": "2.*"
   }
 }
