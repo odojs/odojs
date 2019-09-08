@@ -1,7 +1,7 @@
 const extend = require('extend')
 
 const component = (spec) => {
-  const spec = extend({}, spec)
+  spec = extend({}, spec)
   const Component = (state, params, hub) =>
     spec.render.call(spec, state, params, hub)
   Component.use = (plugin) => plugin(Component, spec)
