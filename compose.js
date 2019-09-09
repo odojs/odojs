@@ -8,7 +8,7 @@ const virtualize = require('vdom-virtualize')
 // hack for virtual-dom trying to set contentEditable to ''
 const removeContentEditable = (vnode) => {
   if (vnode.properties != null)
-    delete ref.contentEditable
+    delete vnode.properties.contentEditable
   if (!vnode.children) return
   for (let node of vnode.children)
     removeContentEditable(node)
