@@ -15,7 +15,7 @@ const removeContentEditable = (vnode) => {
 }
 
 module.exports = (component, state, params, hub, parent, options) => {
-  const time = (description, cb) => cb()
+  let time = (description, cb) => cb()
   if ((options != null ? options.hub : void 0) != null) {
     time = function(description, cb) {
       var endedAt, startedAt
